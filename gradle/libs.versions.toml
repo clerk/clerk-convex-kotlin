@@ -1,0 +1,41 @@
+[versions]
+agp = "8.13.2"
+detekt = "1.23.8"
+kotlin = "2.3.10"
+kotlinxCoroutines = "1.10.2"
+kotlinxSerialization = "1.9.0"
+mavenPublish = "0.33.0"
+spotless = "8.2.1"
+
+# Build Versions
+jdk = "17"
+jvmTarget = "17"
+minSdk = "24"
+compileSdk = "36"
+
+# SDK Versions
+clerkApi = "1.0"
+convexMobile = "0.7.1"
+
+# Test
+junit = "4.13.2"
+mockk = "1.14.7"
+robolectric = "4.16.1"
+
+[libraries]
+clerk-api = { module = "com.clerk:clerk-android-api", version.ref = "clerkApi" }
+convex-mobile = { module = "dev.convex:android-convexmobile", version.ref = "convexMobile" }
+kotlinx-coroutines = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutines" }
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinxCoroutines" }
+kotlinx-serialization = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinxSerialization" }
+
+junit = { module = "junit:junit", version.ref = "junit" }
+mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
+robolectric = { module = "org.robolectric:robolectric", version.ref = "robolectric" }
+
+[plugins]
+android-library = { id = "com.android.library", version.ref = "agp" }
+detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+mavenPublish = { id = "com.vanniktech.maven.publish", version.ref = "mavenPublish" }
+spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
