@@ -1,10 +1,34 @@
-# clerk-convex-kotlin
+# ClerkConvex
 
-Android library that bridges [Clerk](https://clerk.com) authentication with [Convex](https://convex.dev) backends.
+**Status:** 🚧 Work in Progress — contents are unstable and subject to change.
 
-Implements the Convex `AuthProvider` interface and automatically syncs Clerk session state to Convex — when a user signs in or out via Clerk, the Convex client's auth state updates automatically.
+`ClerkConvex` is an Android library that bridges Clerk and Convex by automatically syncing Clerk session auth into `ConvexClientWithAuth`.
 
-## Installation
+## Getting Started
+
+If you haven't started a Convex app yet, begin with the
+[Convex Android quickstart](https://docs.convex.dev/quickstart/android) to get a working
+Android app connected to Convex.
+
+Once you have a working Convex + Android app, use the steps below to integrate Clerk.
+Follow the [Clerk Android quickstart](https://clerk.com/docs/android/getting-started/quickstart) for app-side Clerk setup details.
+
+1. Set up Clerk in your Android app (create an app in Clerk, get your publishable key, and add Clerk SDK dependencies).
+2. Configure Convex auth by creating `convex/auth.config.ts`:
+
+```typescript
+export default {
+  providers: [
+    {
+      domain: "YOUR_CLERK_ISSUER_URL",
+      applicationID: "convex",
+    },
+  ],
+};
+```
+
+3. Run `npx convex dev` to sync backend auth configuration.
+4. Add `ClerkConvex` to your app:
 
 ```kotlin
 // build.gradle.kts
@@ -13,22 +37,27 @@ dependencies {
 }
 ```
 
-## Usage
+5. Wherever you currently create `ConvexClient`, switch to `ClerkConvexClient`:
 
 ```kotlin
-// 1. Configure Clerk (typically in Application.onCreate)
-Clerk.configure(publishableKey = "pk_test_...")
+import com.clerk.api.Clerk
+import com.clerk.convex.ClerkConvexClient
 
-// 2. Create the client
+Clerk.configure(publishableKey = "YOUR_CLERK_PUBLISHABLE_KEY")
+
 val clerkConvex = ClerkConvexClient(
-    deploymentUrl = "https://your-deployment.convex.cloud",
+    deploymentUrl = "YOUR_CONVEX_DEPLOYMENT_URL",
     context = applicationContext,
 )
+```
 
-// 3. Use the Convex client for queries, mutations, etc.
-clerkConvex.convex.subscribe<List<MyData>>("myQuery", args)
+6. Authenticate users via Clerk; auth state is automatically synced to Convex.
 
-// 4. Observe auth state
+### Reacting to authentication state
+
+The `ConvexClientWithAuth.authState` field is a `StateFlow` that contains the latest authentication state from the client. You can collect auth state values and show the appropriate screens (e.g. login/logout buttons, loading screens, authenticated content).
+
+```kotlin
 clerkConvex.convex.authState.collect { state ->
     when (state) {
         is AuthState.Authenticated -> { /* signed in */ }
@@ -36,19 +65,4 @@ clerkConvex.convex.authState.collect { state ->
         is AuthState.AuthLoading -> { /* loading */ }
     }
 }
-
-// 5. Clean up when done
-clerkConvex.close()
 ```
-
-## How It Works
-
-1. User signs in via Clerk UI components
-2. `ClerkConvexAuthProvider` detects the session change via `Clerk.sessionFlow`
-3. Automatically calls `loginFromCache()` on the Convex client
-4. Fetches a JWT from Clerk and passes it to Convex for backend authentication
-5. When the user signs out, Convex auth is cleared automatically
-
-## License
-
-MIT
