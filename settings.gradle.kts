@@ -25,3 +25,4 @@ dependencyResolutionManagement {
 rootProject.name = "ClerkConvex"
 
 include(":source:clerk-convex")
+include(":samples:workout-tracker")
