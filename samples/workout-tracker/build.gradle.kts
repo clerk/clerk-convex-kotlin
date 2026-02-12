@@ -29,11 +29,9 @@ android {
     val convexDeploymentUrlProp = "WORKOUT_CONVEX_DEPLOYMENT_URL"
 
     val clerkPublishableKey =
-      (project.findProperty(clerkPublishableKeyProp) as String?)
-        ?: "pk_test_bG92aW5nLW1vdGgtMjIuY2xlcmsuYWNjb3VudHMuZGV2JA"
+      (project.findProperty(clerkPublishableKeyProp) as String?) ?: "PLACEHOLDER_KEY"
     val convexDeploymentUrl =
-      (project.findProperty(convexDeploymentUrlProp) as String?)
-        ?: "https://beaming-okapi-405.convex.cloud"
+      (project.findProperty(convexDeploymentUrlProp) as String?) ?: "PLACEHOLDER_URL"
 
     buildConfigField("String", clerkPublishableKeyProp, "\"$clerkPublishableKey\"")
     buildConfigField("String", convexDeploymentUrlProp, "\"$convexDeploymentUrl\"")

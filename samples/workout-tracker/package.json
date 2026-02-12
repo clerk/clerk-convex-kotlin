@@ -1,0 +1,16 @@
+{
+  "name": "workout-tracker",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "convex": "^1.31.7",
+    "convex-helpers": "^0.1.112"
+  }
+}

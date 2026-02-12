@@ -1,7 +1,7 @@
 export default {
   providers: [
     {
-      domain: "https://loving-moth-22.accounts.dev",
+      domain: "CLERK_ISSUER_URL",
       applicationID: "convex",
     },
   ],
