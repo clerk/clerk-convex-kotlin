@@ -51,7 +51,7 @@ android {
 }
 
 dependencies {
-  implementation(project(":source:clerk-convex"))
+  implementation(project(":source:clerk-convex-android"))
   implementation(libs.clerk.ui)
   implementation(libs.core.ktx)
   implementation(libs.convex.mobile)

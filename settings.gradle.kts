@@ -24,5 +24,6 @@ dependencyResolutionManagement {
 
 rootProject.name = "ClerkConvex"
 
-include(":source:clerk-convex")
+include(":source:clerk-convex-android")
+
 include(":samples:workout-tracker")
