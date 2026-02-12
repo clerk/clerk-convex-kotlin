@@ -50,6 +50,12 @@ class ClerkConvexAuthProviderTest {
     assertFalse(ClerkConvexAuthProvider.shouldLogin(oldSession = null, newSession = newSession))
   }
 
+  @Test
+  fun `shouldLogin returns false when new session is pending`() {
+    val newSession = mockSession(status = SessionStatus.PENDING, id = "sess_1")
+    assertFalse(ClerkConvexAuthProvider.shouldLogin(oldSession = null, newSession = newSession))
+  }
+
   // -- shouldLogout --
 
   @Test
@@ -67,6 +73,13 @@ class ClerkConvexAuthProviderTest {
   fun `shouldLogout returns false when new session exists`() {
     val oldSession = mockSession(status = SessionStatus.ACTIVE, id = "sess_1")
     val newSession = mockSession(status = SessionStatus.ACTIVE, id = "sess_1")
+    assertFalse(ClerkConvexAuthProvider.shouldLogout(oldSession, newSession))
+  }
+
+  @Test
+  fun `shouldLogout returns false when session is replaced`() {
+    val oldSession = mockSession(status = SessionStatus.ACTIVE, id = "sess_1")
+    val newSession = mockSession(status = SessionStatus.ACTIVE, id = "sess_2")
     assertFalse(ClerkConvexAuthProvider.shouldLogout(oldSession, newSession))
   }
 
