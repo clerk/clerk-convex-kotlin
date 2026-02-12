@@ -11,15 +11,15 @@ import androidx.compose.runtime.getValue
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.clerk.ui.auth.AuthView
+import com.clerk.workouttracker.ui.AppAuthState
 import com.clerk.workouttracker.ui.AuthViewModel
 import com.clerk.workouttracker.ui.LoadingScreen
 import com.clerk.workouttracker.ui.OverviewScreen
 import com.clerk.workouttracker.ui.OverviewViewModel
-import com.clerk.workouttracker.ui.SignInScreen
 import com.clerk.workouttracker.ui.WorkoutEditorScreen
 import com.clerk.workouttracker.ui.WorkoutEditorViewModel
 import com.clerk.workouttracker.ui.theme.ClerkConvexTheme
-import dev.convex.android.AuthState
 
 class MainActivity : ComponentActivity() {
   private val authViewModel by viewModels<AuthViewModel> { AuthViewModel.Factory }
@@ -30,18 +30,13 @@ class MainActivity : ComponentActivity() {
     setContent {
       ClerkConvexTheme {
         val navController = rememberNavController()
-        val authState by authViewModel.authState.collectAsState(AuthState.AuthLoading())
+        val authState by authViewModel.authState.collectAsState(AppAuthState.Loading)
 
-        val initialRoute =
-          when (authState) {
-            is AuthState.AuthLoading -> Loading.route
-            is AuthState.Authenticated -> Overview.route
-            is AuthState.Unauthenticated -> SignIn.route
-          }
+        val initialRoute = authState.toRoute()
 
         NavHost(navController = navController, startDestination = initialRoute) {
           composable(route = Loading.route) { LoadingScreen() }
-          composable(route = SignIn.route) { SignInScreen() }
+          composable(route = SignIn.route) { AuthView() }
           composable(route = Overview.route) {
             val viewModel: OverviewViewModel by viewModels { OverviewViewModel.Factory }
             OverviewScreen(
@@ -57,12 +52,7 @@ class MainActivity : ComponentActivity() {
 
         // Keep nav state aligned with Clerk auth state changes.
         LaunchedEffect(authState) {
-          val targetRoute =
-            when (authState) {
-              is AuthState.AuthLoading -> Loading.route
-              is AuthState.Authenticated -> Overview.route
-              is AuthState.Unauthenticated -> SignIn.route
-            }
+          val targetRoute = authState.toRoute()
 
           if (navController.currentDestination?.route != targetRoute) {
             navController.navigate(targetRoute) {
@@ -75,3 +65,10 @@ class MainActivity : ComponentActivity() {
     }
   }
 }
+
+private fun AppAuthState.toRoute(): String =
+  when (this) {
+    AppAuthState.Loading -> Loading.route
+    AppAuthState.SignedIn -> Overview.route
+    AppAuthState.SignedOut -> SignIn.route
+  }
