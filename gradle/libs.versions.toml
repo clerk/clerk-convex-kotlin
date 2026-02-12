@@ -10,7 +10,7 @@ spotless = "8.2.1"
 # Build Versions
 jdk = "17"
 jvmTarget = "17"
-minSdk = "24"
+minSdk = "26"
 compileSdk = "36"
 
 # SDK Versions
