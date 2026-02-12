@@ -21,7 +21,6 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -29,7 +28,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import com.clerk.workouttracker.models.Activity
+import com.clerk.workouttracker.models.WorkoutActivity
 import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneOffset
@@ -40,9 +39,8 @@ fun WorkoutEditorScreen(viewModel: WorkoutEditorViewModel, workoutSaved: () -> U
   var showDatePicker by remember { mutableStateOf(false) }
   var activityDropdownExpanded by remember { mutableStateOf(false) }
   var selectedDate by remember { mutableStateOf(LocalDate.now()) }
-  var selectedActivity by remember { mutableStateOf<Activity?>(null) }
+  var selectedActivity by remember { mutableStateOf<WorkoutActivity?>(null) }
   var durationRaw by remember { mutableStateOf("") }
-  val saveState by viewModel.uiState.collectAsState()
 
   val initialDateMillis = selectedDate.atStartOfDay(ZoneOffset.UTC).toInstant().toEpochMilli()
   val datePickerState = rememberDatePickerState(initialSelectedDateMillis = initialDateMillis)
@@ -52,23 +50,17 @@ fun WorkoutEditorScreen(viewModel: WorkoutEditorViewModel, workoutSaved: () -> U
       selectedActivity = selectedActivity,
       durationRaw = durationRaw,
       activityDropdownExpanded = activityDropdownExpanded,
-      isSaving = saveState.isSaving,
-      errorMessage = saveState.errorMessage,
     )
   val actions =
     WorkoutEditorActions(
       onBack = workoutSaved,
       onShowDatePicker = { showDatePicker = true },
       onActivityDropdownExpandedChange = { activityDropdownExpanded = it },
-      onActivitySelected = {
-        selectedActivity = it
-        viewModel.clearError()
-      },
+      onActivitySelected = { selectedActivity = it },
       onDurationChanged = { value ->
         if (value.all(Char::isDigit)) {
           durationRaw = value
         }
-        viewModel.clearError()
       },
       onSave = {
         val activity = selectedActivity
@@ -76,7 +68,7 @@ fun WorkoutEditorScreen(viewModel: WorkoutEditorViewModel, workoutSaved: () -> U
           val duration = durationRaw.trim().takeIf { it.isNotEmpty() }?.toIntOrNull()
           viewModel.storeWorkout(
             date = selectedDate.toString(),
-            activity = activity,
+            workoutActivity = activity,
             duration = duration,
             onSaved = workoutSaved,
           )
@@ -90,10 +82,7 @@ fun WorkoutEditorScreen(viewModel: WorkoutEditorViewModel, workoutSaved: () -> U
     WorkoutDatePickerDialog(
       datePickerState = datePickerState,
       onDismiss = { showDatePicker = false },
-      onDateConfirmed = {
-        selectedDate = it
-        viewModel.clearError()
-      },
+      onDateConfirmed = { selectedDate = it },
     )
   }
 }
@@ -142,17 +131,10 @@ private fun WorkoutEditorForm(
     )
     Button(
       onClick = actions.onSave,
-      enabled = uiState.selectedActivity != null && !uiState.isSaving,
+      enabled = uiState.selectedActivity != null,
       modifier = Modifier.fillMaxWidth(),
     ) {
-      Text(if (uiState.isSaving) "Saving..." else "Save")
-    }
-    uiState.errorMessage?.let { errorMessage ->
-      Text(
-        text = errorMessage,
-        color = MaterialTheme.colorScheme.error,
-        style = MaterialTheme.typography.bodyMedium,
-      )
+      Text("Save")
     }
   }
 }
@@ -171,10 +153,10 @@ private fun WorkoutDateField(selectedDate: LocalDate, onShowDatePicker: () -> Un
 
 @Composable
 private fun WorkoutActivityField(
-  selectedActivity: Activity?,
+  selectedActivity: WorkoutActivity?,
   activityDropdownExpanded: Boolean,
   onActivityDropdownExpandedChange: (Boolean) -> Unit,
-  onActivitySelected: (Activity) -> Unit,
+  onActivitySelected: (WorkoutActivity) -> Unit,
 ) {
   Box(modifier = Modifier.fillMaxWidth()) {
     OutlinedTextField(
@@ -191,7 +173,7 @@ private fun WorkoutActivityField(
       expanded = activityDropdownExpanded,
       onDismissRequest = { onActivityDropdownExpandedChange(false) },
     ) {
-      Activity.entries.forEach { activity ->
+      WorkoutActivity.entries.forEach { activity ->
         DropdownMenuItem(
           text = { Text(text = activity.name) },
           onClick = {
@@ -244,18 +226,16 @@ private fun WorkoutDatePickerDialog(
 
 private data class WorkoutEditorUiState(
   val selectedDate: LocalDate,
-  val selectedActivity: Activity?,
+  val selectedActivity: WorkoutActivity?,
   val durationRaw: String,
   val activityDropdownExpanded: Boolean,
-  val isSaving: Boolean,
-  val errorMessage: String?,
 )
 
 private data class WorkoutEditorActions(
   val onBack: () -> Unit,
   val onShowDatePicker: () -> Unit,
   val onActivityDropdownExpandedChange: (Boolean) -> Unit,
-  val onActivitySelected: (Activity) -> Unit,
+  val onActivitySelected: (WorkoutActivity) -> Unit,
   val onDurationChanged: (String) -> Unit,
   val onSave: () -> Unit,
 )

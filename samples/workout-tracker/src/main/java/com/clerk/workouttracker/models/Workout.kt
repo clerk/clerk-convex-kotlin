@@ -8,12 +8,12 @@ import kotlinx.serialization.Serializable
 data class Workout(
   @SerialName("_id") val id: String,
   val date: String,
-  val activity: Activity,
+  val workoutActivity: WorkoutActivity,
   val duration: @ConvexNum Int? = null,
 )
 
 @Serializable
-enum class Activity {
+enum class WorkoutActivity {
   Running,
   Lifting,
   Walking,

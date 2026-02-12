@@ -1,8 +1,8 @@
 package com.clerk.workouttracker.core
 
 import com.clerk.convex.ClerkConvexClient
-import com.clerk.workouttracker.models.Activity
 import com.clerk.workouttracker.models.Workout
+import com.clerk.workouttracker.models.WorkoutActivity
 import dev.convex.android.AuthState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
@@ -18,8 +18,8 @@ class WorkoutRepository(private val clerkConvex: ClerkConvexClient) {
       mapOf("startDate" to startDate, "endDate" to endDate),
     )
 
-  suspend fun storeWorkout(date: String, activity: Activity, duration: Int?) {
-    val args = mutableMapOf<String, Any>("date" to date, "activity" to activity.name)
+  suspend fun storeWorkout(date: String, workoutActivity: WorkoutActivity, duration: Int?) {
+    val args = mutableMapOf<String, Any>("date" to date, "activity" to workoutActivity.name)
     if (duration != null) {
       args["duration"] = duration
     }

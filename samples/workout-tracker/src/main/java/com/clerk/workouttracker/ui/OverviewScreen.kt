@@ -153,7 +153,7 @@ private fun WorkoutRow(workout: Workout, onDelete: () -> Unit) {
       )
       Spacer(modifier = Modifier.height(4.dp))
       Row(verticalAlignment = Alignment.CenterVertically) {
-        Text(text = workout.activity.name, style = MaterialTheme.typography.bodyLarge)
+        Text(text = workout.workoutActivity.name, style = MaterialTheme.typography.bodyLarge)
         Spacer(modifier = Modifier.weight(1f))
         workout.duration?.let { duration ->
           val suffix = if (duration == 1) "" else "s"

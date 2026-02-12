@@ -10,3 +10,4 @@ build/
 .cxx
 local.properties
 .context/
+/samples/workout-tracker/convex/node_modules/
