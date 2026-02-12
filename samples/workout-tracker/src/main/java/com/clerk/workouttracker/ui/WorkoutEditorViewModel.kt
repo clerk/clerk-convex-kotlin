@@ -9,10 +9,12 @@ import androidx.lifecycle.viewmodel.viewModelFactory
 import com.clerk.workouttracker.WorkoutTrackerApplication
 import com.clerk.workouttracker.core.WorkoutRepository
 import com.clerk.workouttracker.models.Activity
+import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withTimeout
 
 class WorkoutEditorViewModel(private val repository: WorkoutRepository) : ViewModel() {
   private val _uiState = MutableStateFlow(WorkoutEditorSaveUiState())
@@ -23,15 +25,20 @@ class WorkoutEditorViewModel(private val repository: WorkoutRepository) : ViewMo
 
     _uiState.update { state -> state.copy(isSaving = true, errorMessage = null) }
     viewModelScope.launch {
-      runCatching { repository.storeWorkout(date = date, activity = activity, duration = duration) }
+      runCatching {
+          withTimeout(SAVE_TIMEOUT_MS) {
+            repository.storeWorkout(date = date, activity = activity, duration = duration)
+          }
+        }
         .onSuccess { onSaved() }
         .onFailure { throwable ->
-          _uiState.update { state ->
-            state.copy(
-              errorMessage =
-                throwable.message ?: "Could not save workout. Check your connection and try again."
-            )
-          }
+          val errorMessage =
+            if (throwable is TimeoutCancellationException) {
+              "Save is taking too long. Check your connection and try again."
+            } else {
+              throwable.message ?: "Could not save workout. Check your connection and try again."
+            }
+          _uiState.update { state -> state.copy(errorMessage = errorMessage) }
         }
       _uiState.update { state -> state.copy(isSaving = false) }
     }
@@ -42,6 +49,8 @@ class WorkoutEditorViewModel(private val repository: WorkoutRepository) : ViewMo
   }
 
   companion object {
+    private const val SAVE_TIMEOUT_MS = 15_000L
+
     val Factory: ViewModelProvider.Factory = viewModelFactory {
       initializer {
         val repository = (this[APPLICATION_KEY] as WorkoutTrackerApplication).repository
