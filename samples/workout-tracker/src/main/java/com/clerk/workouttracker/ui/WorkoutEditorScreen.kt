@@ -21,6 +21,7 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -41,6 +42,7 @@ fun WorkoutEditorScreen(viewModel: WorkoutEditorViewModel, workoutSaved: () -> U
   var selectedDate by remember { mutableStateOf(LocalDate.now()) }
   var selectedActivity by remember { mutableStateOf<Activity?>(null) }
   var durationRaw by remember { mutableStateOf("") }
+  val saveState by viewModel.uiState.collectAsState()
 
   val initialDateMillis = selectedDate.atStartOfDay(ZoneOffset.UTC).toInstant().toEpochMilli()
   val datePickerState = rememberDatePickerState(initialSelectedDateMillis = initialDateMillis)
@@ -50,17 +52,23 @@ fun WorkoutEditorScreen(viewModel: WorkoutEditorViewModel, workoutSaved: () -> U
       selectedActivity = selectedActivity,
       durationRaw = durationRaw,
       activityDropdownExpanded = activityDropdownExpanded,
+      isSaving = saveState.isSaving,
+      errorMessage = saveState.errorMessage,
     )
   val actions =
     WorkoutEditorActions(
       onBack = workoutSaved,
       onShowDatePicker = { showDatePicker = true },
       onActivityDropdownExpandedChange = { activityDropdownExpanded = it },
-      onActivitySelected = { selectedActivity = it },
+      onActivitySelected = {
+        selectedActivity = it
+        viewModel.clearError()
+      },
       onDurationChanged = { value ->
         if (value.all(Char::isDigit)) {
           durationRaw = value
         }
+        viewModel.clearError()
       },
       onSave = {
         val activity = selectedActivity
@@ -82,7 +90,10 @@ fun WorkoutEditorScreen(viewModel: WorkoutEditorViewModel, workoutSaved: () -> U
     WorkoutDatePickerDialog(
       datePickerState = datePickerState,
       onDismiss = { showDatePicker = false },
-      onDateConfirmed = { selectedDate = it },
+      onDateConfirmed = {
+        selectedDate = it
+        viewModel.clearError()
+      },
     )
   }
 }
@@ -131,10 +142,17 @@ private fun WorkoutEditorForm(
     )
     Button(
       onClick = actions.onSave,
-      enabled = uiState.selectedActivity != null,
+      enabled = uiState.selectedActivity != null && !uiState.isSaving,
       modifier = Modifier.fillMaxWidth(),
     ) {
-      Text("Save")
+      Text(if (uiState.isSaving) "Saving..." else "Save")
+    }
+    uiState.errorMessage?.let { errorMessage ->
+      Text(
+        text = errorMessage,
+        color = MaterialTheme.colorScheme.error,
+        style = MaterialTheme.typography.bodyMedium,
+      )
     }
   }
 }
@@ -229,6 +247,8 @@ private data class WorkoutEditorUiState(
   val selectedActivity: Activity?,
   val durationRaw: String,
   val activityDropdownExpanded: Boolean,
+  val isSaving: Boolean,
+  val errorMessage: String?,
 )
 
 private data class WorkoutEditorActions(
