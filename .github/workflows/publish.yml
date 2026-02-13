@@ -5,6 +5,54 @@ on:
     types:
       - published
   workflow_dispatch:
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    env:
+      ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
+      ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
+      ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.MAVEN_SIGNING_KEY }}
+      ORG_GRADLE_PROJECT_signingInMemoryKeyId: ${{ secrets.MAVEN_SIGNING_KEY_ID }}
+      ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ secrets.MAVEN_SIGNING_PASSWORD }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v3
+
+      - name: Resolve release version
+        run: |
+          version="$(
+            awk -F= '/^CLERK_CONVEX_KOTLIN_VERSION=/{print $2; exit}' gradle.properties |
+            tr -d '[:space:]'
+          )"
+          if [ -z "$version" ]; then
+            echo "Missing CLERK_CONVEX_KOTLIN_VERSION in gradle.properties"
+            exit 1
+          fi
+
+          if [ "${{ github.event_name }}" = "release" ]; then
+            tag_version="${{ github.event.release.tag_name }}"
+            tag_version="${tag_version#v}"
+            if [ "$tag_version" != "$version" ]; then
+              echo "Release tag version ($tag_version) does not match gradle.properties version ($version)"
+              exit 1
+            fi
+          fi
+
+          echo "Resolved version: $version"
+
       - name: Validate publishing credentials
         run: |
           missing=0
