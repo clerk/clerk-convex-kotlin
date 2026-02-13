@@ -5,11 +5,6 @@ on:
     types:
       - published
   workflow_dispatch:
-    inputs:
-      version:
-        description: "Version to publish (example: 1.2.3 or v1.2.3)"
-        required: true
-        type: string
 
 jobs:
   publish:
@@ -36,23 +31,6 @@ jobs:
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v3
 
-      - name: Resolve release version
-        id: version
-        run: |
-          if [ "${{ github.event_name }}" = "release" ]; then
-            raw_version="${{ github.event.release.tag_name }}"
-          else
-            raw_version="${{ inputs.version }}"
-          fi
-
-          version="${raw_version#v}"
-          if [ -z "$version" ]; then
-            echo "Resolved version is empty"
-            exit 1
-          fi
-          echo "Resolved version: $version"
-          echo "value=$version" >> "$GITHUB_OUTPUT"
-
       - name: Validate publishing credentials
         run: |
           missing=0
@@ -73,6 +51,4 @@ jobs:
           fi
 
       - name: Publish and release to Maven Central
-        env:
-          ORG_GRADLE_PROJECT_CLERK_CONVEX_VERSION: ${{ steps.version.outputs.value }}
         run: ./gradlew :source:clerk-convex-android:publishAndReleaseToMavenCentral --stacktrace

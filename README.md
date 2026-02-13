@@ -85,12 +85,16 @@ One-time setup:
 
 Release flow:
 
-1. Create a release tag using `vX.Y.Z` (example: `v1.2.3`).
-2. Publish a GitHub Release for that tag.
-3. The publish workflow strips the leading `v`, sets `CLERK_CONVEX_VERSION`, then runs:
+1. Bump `CLERK_CONVEX_VERSION` in `gradle.properties`.
+2. Create a release tag using `vX.Y.Z` (example: `v1.2.3`) that matches `CLERK_CONVEX_VERSION`.
+3. Publish a GitHub Release for that tag.
+4. The publish workflow runs:
    - `:source:clerk-convex-android:publishAndReleaseToMavenCentral`
+
+SDK version configuration:
+
+1. `CLERK_CONVEX_VERSION` in `gradle.properties` controls the published `com.clerk:clerk-convex` version.
 
 Manual publishing:
 
 1. Run the `Publish` workflow from Actions (`workflow_dispatch`).
-2. Provide `version` as `X.Y.Z` or `vX.Y.Z`.
