@@ -66,3 +66,31 @@ clerkConvex.convex.authState.collect { state ->
     }
 }
 ```
+
+## Publishing
+
+Publishing is handled by `.github/workflows/publish.yml` and the `com.vanniktech.maven.publish` plugin configured in `source/clerk-convex-android/build.gradle.kts`.
+
+One-time setup:
+
+1. Create and verify the `com.clerk` namespace in Maven Central Portal.
+2. Create a Maven Central user token (username + password).
+3. Create an ASCII-armored GPG private key for artifact signing.
+4. Add these GitHub repository secrets:
+   - `MAVEN_CENTRAL_USERNAME`
+   - `MAVEN_CENTRAL_PASSWORD`
+   - `MAVEN_SIGNING_KEY`
+   - `MAVEN_SIGNING_PASSWORD`
+   - `MAVEN_SIGNING_KEY_ID` (optional)
+
+Release flow:
+
+1. Create a release tag using `vX.Y.Z` (example: `v1.2.3`).
+2. Publish a GitHub Release for that tag.
+3. The publish workflow strips the leading `v`, sets `CLERK_CONVEX_VERSION`, then runs:
+   - `:source:clerk-convex-android:publishAndReleaseToMavenCentral`
+
+Manual publishing:
+
+1. Run the `Publish` workflow from Actions (`workflow_dispatch`).
+2. Provide `version` as `X.Y.Z` or `vX.Y.Z`.
