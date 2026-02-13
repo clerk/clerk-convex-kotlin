@@ -32,7 +32,7 @@ android {
 }
 
 mavenPublishing {
-  coordinates("com.clerk", "clerk-convex", property("CLERK_CONVEX_VERSION") as String)
+  coordinates("com.clerk", "clerk-convex-kotlin", property("CLERK_CONVEX_KOTLIN_VERSION") as String)
   publishToMavenCentral()
   signAllPublications()
   pom {
