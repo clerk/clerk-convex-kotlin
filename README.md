@@ -51,50 +51,5 @@ val clerkConvex = ClerkConvexClient(
 )
 ```
 
-6. Authenticate users via Clerk; auth state is automatically synced to Convex.
 
-### Reacting to authentication state
 
-The `ConvexClientWithAuth.authState` field is a `StateFlow` that contains the latest authentication state from the client. You can collect auth state values and show the appropriate screens (e.g. login/logout buttons, loading screens, authenticated content).
-
-```kotlin
-clerkConvex.convex.authState.collect { state ->
-    when (state) {
-        is AuthState.Authenticated -> { /* signed in */ }
-        is AuthState.Unauthenticated -> { /* signed out */ }
-        is AuthState.AuthLoading -> { /* loading */ }
-    }
-}
-```
-
-## Publishing
-
-Publishing is handled by `.github/workflows/publish.yml` and the `com.vanniktech.maven.publish` plugin configured in `source/clerk-convex-android/build.gradle.kts`.
-
-One-time setup:
-
-1. Create and verify the `com.clerk` namespace in Maven Central Portal.
-2. Create a Maven Central user token (username + password).
-3. Create an ASCII-armored GPG private key for artifact signing.
-4. Add these GitHub repository secrets:
-   - `MAVEN_CENTRAL_USERNAME`
-   - `MAVEN_CENTRAL_PASSWORD`
-   - `MAVEN_SIGNING_KEY`
-   - `MAVEN_SIGNING_PASSWORD`
-   - `MAVEN_SIGNING_KEY_ID` (optional)
-
-Release flow:
-
-1. Bump `CLERK_CONVEX_VERSION` in `gradle.properties`.
-2. Create a release tag using `vX.Y.Z` (example: `v1.2.3`) that matches `CLERK_CONVEX_VERSION`.
-3. Publish a GitHub Release for that tag.
-4. The publish workflow runs:
-   - `:source:clerk-convex-android:publishAndReleaseToMavenCentral`
-
-SDK version configuration:
-
-1. `CLERK_CONVEX_VERSION` in `gradle.properties` controls the published `com.clerk:clerk-convex` version.
-
-Manual publishing:
-
-1. Run the `Publish` workflow from Actions (`workflow_dispatch`).
