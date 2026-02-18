@@ -12,11 +12,11 @@ jobs:
     permissions:
       contents: read
     env:
-      ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
-      ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
-      ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.MAVEN_CENTRAL_SIGNING_KEY }}
-      ORG_GRADLE_PROJECT_signingInMemoryKeyId: ${{ secrets.MAVEN_CENTRAL_SIGNING_KEY_ID }}
-      ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ secrets.MAVEN_CENTRAL_SIGNING_KEY_PASSWORD }}
+      ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.MAVEN_CENTRAL_USERNAME || secrets.MAVEN_USERNAME }}
+      ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.MAVEN_CENTRAL_PASSWORD || secrets.MAVEN_PASSWORD }}
+      ORG_GRADLE_PROJECT_signingInMemoryKey: ${{ secrets.MAVEN_CENTRAL_SIGNING_KEY || secrets.MAVEN_SIGNING_KEY }}
+      ORG_GRADLE_PROJECT_signingInMemoryKeyPassword: ${{ secrets.MAVEN_CENTRAL_SIGNING_KEY_PASSWORD || secrets.MAVEN_CENTRAL_SIGNING_PASSWORD || secrets.MAVEN_SIGNING_PASSWORD }}
+      MAVEN_SIGNING_KEY_ID_RAW: ${{ secrets.MAVEN_CENTRAL_SIGNING_KEY_ID || secrets.MAVEN_SIGNING_KEY_ID }}
 
     steps:
       - name: Checkout
@@ -70,6 +70,32 @@ jobs:
 
           if [ "$missing" -ne 0 ]; then
             exit 1
+          fi
+
+          if ! printf '%s' "$ORG_GRADLE_PROJECT_signingInMemoryKey" | grep -q "BEGIN PGP PRIVATE KEY BLOCK"; then
+            echo "Signing key secret is present but invalid."
+            echo "Expected an ASCII-armored private key (including BEGIN/END lines) in ORG_GRADLE_PROJECT_signingInMemoryKey."
+            exit 1
+          fi
+
+          if [ -n "$MAVEN_SIGNING_KEY_ID_RAW" ]; then
+            normalized_key_id="$(printf '%s' "$MAVEN_SIGNING_KEY_ID_RAW" | tr -d '[:space:]')"
+            normalized_key_id="${normalized_key_id#0x}"
+            normalized_key_id="${normalized_key_id#0X}"
+
+            if ! printf '%s' "$normalized_key_id" | grep -Eq '^[0-9A-Fa-f]+$'; then
+              echo "Invalid signing key ID format. Expected hexadecimal characters only."
+              exit 1
+            fi
+
+            if [ "${#normalized_key_id}" -lt 8 ]; then
+              echo "Invalid signing key ID length. Expected at least 8 hexadecimal characters."
+              exit 1
+            fi
+
+            normalized_key_id="${normalized_key_id: -8}"
+            normalized_key_id="$(printf '%s' "$normalized_key_id" | tr '[:lower:]' '[:upper:]')"
+            echo "ORG_GRADLE_PROJECT_signingInMemoryKeyId=$normalized_key_id" >> "$GITHUB_ENV"
           fi
 
       - name: Publish and release to Maven Central
