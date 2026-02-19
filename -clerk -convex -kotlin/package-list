@@ -1,0 +1,23 @@
+$dokka.format:html-v1
+$dokka.linkExtension:html
+$dokka.location:com.clerk.convex////PointingToDeclaration/-clerk -convex -kotlin/com.clerk.convex/index.html
+$dokka.location:com.clerk.convex/ClerkConvexAuthError.ClerkNotInitialized///PointingToDeclaration/-clerk -convex -kotlin/com.clerk.convex/-clerk-convex-auth-error/-clerk-not-initialized/index.html
+$dokka.location:com.clerk.convex/ClerkConvexAuthError.NoActiveSession///PointingToDeclaration/-clerk -convex -kotlin/com.clerk.convex/-clerk-convex-auth-error/-no-active-session/index.html
+$dokka.location:com.clerk.convex/ClerkConvexAuthError.TokenRetrievalFailed///PointingToDeclaration/-clerk -convex -kotlin/com.clerk.convex/-clerk-convex-auth-error/-token-retrieval-failed/index.html
+$dokka.location:com.clerk.convex/ClerkConvexAuthError.TokenRetrievalFailed/TokenRetrievalFailed/#kotlin.String/PointingToDeclaration/-clerk -convex -kotlin/com.clerk.convex/-clerk-convex-auth-error/-token-retrieval-failed/-token-retrieval-failed.html
+$dokka.location:com.clerk.convex/ClerkConvexAuthError.TokenRetrievalFailed/reason/#/PointingToDeclaration/-clerk -convex -kotlin/com.clerk.convex/-clerk-convex-auth-error/-token-retrieval-failed/reason.html
+$dokka.location:com.clerk.convex/ClerkConvexAuthError///PointingToDeclaration/-clerk -convex -kotlin/com.clerk.convex/-clerk-convex-auth-error/index.html
+$dokka.location:com.clerk.convex/ClerkConvexAuthProvider.Companion///PointingToDeclaration/-clerk -convex -kotlin/com.clerk.convex/-clerk-convex-auth-provider/-companion/index.html
+$dokka.location:com.clerk.convex/ClerkConvexAuthProvider///PointingToDeclaration/-clerk -convex -kotlin/com.clerk.convex/-clerk-convex-auth-provider/index.html
+$dokka.location:com.clerk.convex/ClerkConvexAuthProvider/ClerkConvexAuthProvider/#/PointingToDeclaration/-clerk -convex -kotlin/com.clerk.convex/-clerk-convex-auth-provider/-clerk-convex-auth-provider.html
+$dokka.location:com.clerk.convex/ClerkConvexAuthProvider/bind/#dev.convex.android.ConvexClientWithAuth[kotlin.String]#android.content.Context/PointingToDeclaration/-clerk -convex -kotlin/com.clerk.convex/-clerk-convex-auth-provider/bind.html
+$dokka.location:com.clerk.convex/ClerkConvexAuthProvider/close/#/PointingToDeclaration/-clerk -convex -kotlin/com.clerk.convex/-clerk-convex-auth-provider/close.html
+$dokka.location:com.clerk.convex/ClerkConvexAuthProvider/extractIdToken/#kotlin.String/PointingToDeclaration/-clerk -convex -kotlin/com.clerk.convex/-clerk-convex-auth-provider/extract-id-token.html
+$dokka.location:com.clerk.convex/ClerkConvexAuthProvider/login/#android.content.Context/PointingToDeclaration/-clerk -convex -kotlin/com.clerk.convex/-clerk-convex-auth-provider/login.html
+$dokka.location:com.clerk.convex/ClerkConvexAuthProvider/loginFromCache/#/PointingToDeclaration/-clerk -convex -kotlin/com.clerk.convex/-clerk-convex-auth-provider/login-from-cache.html
+$dokka.location:com.clerk.convex/ClerkConvexAuthProvider/logout/#android.content.Context/PointingToDeclaration/-clerk -convex -kotlin/com.clerk.convex/-clerk-convex-auth-provider/logout.html
+$dokka.location:com.clerk.convex/ClerkConvexClient///PointingToDeclaration/-clerk -convex -kotlin/com.clerk.convex/-clerk-convex-client/index.html
+$dokka.location:com.clerk.convex/ClerkConvexClient/ClerkConvexClient/#kotlin.String#android.content.Context/PointingToDeclaration/-clerk -convex -kotlin/com.clerk.convex/-clerk-convex-client/-clerk-convex-client.html
+$dokka.location:com.clerk.convex/ClerkConvexClient/close/#/PointingToDeclaration/-clerk -convex -kotlin/com.clerk.convex/-clerk-convex-client/close.html
+$dokka.location:com.clerk.convex/ClerkConvexClient/convex/#/PointingToDeclaration/-clerk -convex -kotlin/com.clerk.convex/-clerk-convex-client/convex.html
+com.clerk.convex

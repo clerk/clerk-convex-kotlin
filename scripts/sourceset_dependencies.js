@@ -1,0 +1,1 @@
+sourceset_dependencies='{":source:clerk-convex-android/debug":[],":source:clerk-convex-android/main":[],":source:clerk-convex-android/release":[]}'
