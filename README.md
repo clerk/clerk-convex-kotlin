@@ -50,13 +50,3 @@ val clerkConvex = ClerkConvexClient(
     context = applicationContext,
 )
 ```
-
-## Documentation
-
-Generate API documentation locally with:
-
-```bash
-./gradlew :source:clerk-convex-android:dokkaGeneratePublicationHtml
-```
-
-The `Publish Docs` GitHub Actions workflow publishes generated Dokka HTML to the `docs` branch on every push to `main` (and on manual dispatch).
