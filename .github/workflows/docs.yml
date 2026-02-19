@@ -1,0 +1,83 @@
+name: Publish Docs
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  docs:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v3
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Generate Dokka docs
+        run: ./gradlew :source:clerk-convex-android:dokkaGeneratePublicationHtml --stacktrace
+
+      - name: Publish docs branch
+        env:
+          DOCS_BRANCH: docs
+          DOCS_OUTPUT: source/clerk-convex-android/build/dokka/html
+        run: |
+          set -euo pipefail
+
+          if [ ! -d "$DOCS_OUTPUT" ]; then
+            echo "Expected Dokka output at $DOCS_OUTPUT"
+            exit 1
+          fi
+
+          worktree_dir="$(mktemp -d)"
+          cleanup() {
+            git worktree remove --force "$worktree_dir" >/dev/null 2>&1 || true
+            rm -rf "$worktree_dir"
+          }
+          trap cleanup EXIT
+
+          if git ls-remote --exit-code --heads origin "$DOCS_BRANCH" >/dev/null 2>&1; then
+            git fetch origin "$DOCS_BRANCH"
+            git worktree add "$worktree_dir" "origin/$DOCS_BRANCH"
+          else
+            git worktree add --detach "$worktree_dir"
+            (
+              cd "$worktree_dir"
+              git checkout --orphan "$DOCS_BRANCH"
+              git rm -rf . >/dev/null 2>&1 || true
+            )
+          fi
+
+          find "$worktree_dir" -mindepth 1 -maxdepth 1 ! -name ".git" -exec rm -rf {} +
+          cp -R "$DOCS_OUTPUT"/. "$worktree_dir"/
+          touch "$worktree_dir/.nojekyll"
+
+          cd "$worktree_dir"
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add --all
+
+          if git diff --cached --quiet; then
+            echo "No documentation changes to publish"
+            exit 0
+          fi
+
+          git commit -m "Update Dokka docs for ${GITHUB_SHA}"
+          git push origin HEAD:"$DOCS_BRANCH"

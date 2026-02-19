@@ -1,6 +1,7 @@
 plugins {
   alias(libs.plugins.kotlin.android)
   alias(libs.plugins.android.library)
+  alias(libs.plugins.dokka)
   alias(libs.plugins.mavenPublish)
 }
 
@@ -29,6 +30,11 @@ android {
       proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
     }
   }
+}
+
+dokka {
+  moduleName.set("Clerk Convex Kotlin")
+  dokkaSourceSets.configureEach { includes.from("module.md") }
 }
 
 mavenPublishing {
