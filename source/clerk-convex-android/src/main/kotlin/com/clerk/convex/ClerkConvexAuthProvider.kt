@@ -36,8 +36,8 @@ class ClerkConvexAuthProvider : AuthProvider<String> {
   /**
    * Binds a Convex client to this auth provider and starts session sync.
    *
-   * This performs an initial sync and listens for Clerk session changes, calling `loginFromCache()`
-   * or `logout()` on the client as needed.
+   * This performs an initial sync and listens for Clerk session changes, calling `login()` or
+   * `logout()` on the client as needed.
    *
    * Clerk must be configured before calling this method.
    */
@@ -47,11 +47,7 @@ class ClerkConvexAuthProvider : AuthProvider<String> {
     startSessionSync()
   }
 
-  override suspend fun login(context: Context, onIdToken: (String?) -> Unit): Result<String> =
-    loginWithIdTokenCallback(onIdToken)
-
-  override suspend fun loginFromCache(onIdToken: (String?) -> Unit): Result<String> =
-    loginWithIdTokenCallback(onIdToken)
+  override suspend fun login(context: Context): Result<String> = fetchToken()
 
   override suspend fun logout(context: Context): Result<Void?> {
     if (Clerk.activeSession != null) {
@@ -87,12 +83,6 @@ class ClerkConvexAuthProvider : AuthProvider<String> {
         }
     }
 
-  private suspend fun loginWithIdTokenCallback(onIdToken: (String?) -> Unit): Result<String> {
-    val tokenResult = fetchToken()
-    tokenResult.onSuccess { idToken -> onIdToken(idToken) }
-    return tokenResult
-  }
-
   private fun startSessionSync() {
     sessionSyncJob?.cancel()
     sessionSyncJob =
@@ -109,7 +99,7 @@ class ClerkConvexAuthProvider : AuthProvider<String> {
     val convexClient = client?.get() ?: return
 
     if (shouldLogin(oldSession, newSession)) {
-      convexClient.loginFromCache()
+      convexClient.login(applicationContext)
     } else if (shouldLogout(oldSession, newSession)) {
       convexClient.logout(applicationContext)
     }
