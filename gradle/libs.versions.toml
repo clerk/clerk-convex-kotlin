@@ -17,7 +17,7 @@ compileSdk = "36"
 # SDK Versions
 clerkApi = "1.0"
 clerkUi = "1.0"
-convexMobile = "0.7.1"
+convexMobile = "0.8.0"
 
 # Test
 junit = "4.13.2"

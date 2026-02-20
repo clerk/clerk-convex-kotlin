@@ -47,9 +47,11 @@ class ClerkConvexAuthProvider : AuthProvider<String> {
     startSessionSync()
   }
 
-  override suspend fun login(context: Context): Result<String> = fetchToken()
+  override suspend fun login(context: Context, onIdToken: (String?) -> Unit): Result<String> =
+    loginWithIdTokenCallback(onIdToken)
 
-  override suspend fun loginFromCache(): Result<String> = fetchToken()
+  override suspend fun loginFromCache(onIdToken: (String?) -> Unit): Result<String> =
+    loginWithIdTokenCallback(onIdToken)
 
   override suspend fun logout(context: Context): Result<Void?> {
     if (Clerk.activeSession != null) {
@@ -84,6 +86,12 @@ class ClerkConvexAuthProvider : AuthProvider<String> {
           }
         }
     }
+
+  private suspend fun loginWithIdTokenCallback(onIdToken: (String?) -> Unit): Result<String> {
+    val tokenResult = fetchToken()
+    tokenResult.onSuccess { idToken -> onIdToken(idToken) }
+    return tokenResult
+  }
 
   private fun startSessionSync() {
     sessionSyncJob?.cancel()
