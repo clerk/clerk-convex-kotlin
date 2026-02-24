@@ -14,37 +14,37 @@ Follow the [Clerk Android quickstart](https://clerk.com/docs/android/getting-sta
 1. Set up Clerk in your Android app (create an app in Clerk, get your publishable key, and add Clerk SDK dependencies).
 2. Configure Convex auth by creating `convex/auth.config.ts`:
 
-```typescript
-export default {
-  providers: [
-    {
-      domain: "YOUR_CLERK_ISSUER_URL",
-      applicationID: "convex",
-    },
-  ],
-};
-```
+    ```typescript
+    export default {
+      providers: [
+        {
+          domain: "YOUR_CLERK_FRONTEND_API_URL",
+          applicationID: "convex",
+        },
+      ],
+    };
+    ```
 
 3. Run `npx convex dev` to sync backend auth configuration.
 4. Add `clerk-convex-kotlin` to your app:
 
-```kotlin
-// build.gradle.kts
-dependencies {
-    implementation("com.clerk:clerk-convex-kotlin:<latest-version>")
-}
-```
+    ```kotlin
+    // build.gradle.kts
+    dependencies {
+        implementation("com.clerk:clerk-convex-kotlin:<latest-version>")
+    }
+    ```
 
 5. Wherever you currently create `ConvexClient`, switch to `ClerkConvexClient`:
 
-```kotlin
-import com.clerk.api.Clerk
-import com.clerk.convex.ClerkConvexClient
-
-Clerk.configure(publishableKey = "YOUR_CLERK_PUBLISHABLE_KEY")
-
-val clerkConvex = ClerkConvexClient(
-    deploymentUrl = "YOUR_CONVEX_DEPLOYMENT_URL",
-    context = applicationContext,
-)
-```
+    ```kotlin
+    import com.clerk.api.Clerk
+    import com.clerk.convex.ClerkConvexClient
+    
+    Clerk.configure(publishableKey = "YOUR_CLERK_PUBLISHABLE_KEY")
+    
+    val clerkConvex = ClerkConvexClient(
+        deploymentUrl = "YOUR_CONVEX_DEPLOYMENT_URL",
+        context = applicationContext,
+    )
+    ```
