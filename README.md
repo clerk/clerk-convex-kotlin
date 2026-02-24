@@ -26,12 +26,12 @@ export default {
 ```
 
 3. Run `npx convex dev` to sync backend auth configuration.
-4. Add `ClerkConvex` to your app:
+4. Add `clerk-convex-kotlin` to your app:
 
 ```kotlin
 // build.gradle.kts
 dependencies {
-    implementation("com.clerk:clerk-convex:1.0")
+    implementation("com.clerk:clerk-convex-kotlin:<latest-version>")
 }
 ```
 
