@@ -11,11 +11,10 @@ import android.content.Context
  *
  * **Important:** Call `Clerk.initialize(...)` before creating this client.
  */
-@Suppress("FunctionName")
 fun ConvexClientWithAuth(
   deploymentUrl: String,
-  authProvider: ClerkConvexAuthProvider,
   context: Context,
+  authProvider: ClerkConvexAuthProvider = ClerkConvexAuthProvider(),
 ): dev.convex.android.ConvexClientWithAuth<String> =
   dev.convex.android.ConvexClientWithAuth(deploymentUrl, authProvider).also { client ->
     authProvider.bind(client, context)
