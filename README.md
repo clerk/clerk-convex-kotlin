@@ -40,7 +40,7 @@ Follow the [Clerk Android quickstart](https://clerk.com/docs/android/getting-sta
     ```kotlin
     import com.clerk.api.Clerk
     import com.clerk.convex.ClerkConvexAuthProvider
-    import dev.convex.android.ConvexClientWithAuth
+    import com.clerk.convex.ConvexClientWithAuth
     
     Clerk.configure(publishableKey = "YOUR_CLERK_PUBLISHABLE_KEY")
     
@@ -48,6 +48,6 @@ Follow the [Clerk Android quickstart](https://clerk.com/docs/android/getting-sta
     val client = ConvexClientWithAuth(
         deploymentUrl = "YOUR_CONVEX_DEPLOYMENT_URL",
         authProvider = authProvider,
+        context = applicationContext
     )
-    authProvider.bind(client, applicationContext)
     ```
