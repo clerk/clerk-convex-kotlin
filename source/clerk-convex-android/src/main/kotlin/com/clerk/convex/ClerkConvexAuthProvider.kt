@@ -24,7 +24,7 @@ import kotlinx.coroutines.launch
  * Users must first sign in using Clerk. This provider then syncs Convex authentication
  * automatically — no manual `client.login()` call is required.
  *
- * @see ClerkConvexClient
+ * @see ConvexClientWithAuth
  */
 class ClerkConvexAuthProvider : AuthProvider<String> {
 
