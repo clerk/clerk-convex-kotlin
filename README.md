@@ -1,6 +1,6 @@
 # Clerk-Convex-Kotlin
 
-`clerk-convex-kotlin` is an Android library that bridges Clerk and Convex by automatically syncing Clerk session auth into `ConvexClientWithAuth`.
+`clerk-convex-kotlin` is an Android library that bridges Clerk and Convex by automatically syncing Clerk session auth into `ClerkConvexClient`.
 
 ## Getting Started
 
