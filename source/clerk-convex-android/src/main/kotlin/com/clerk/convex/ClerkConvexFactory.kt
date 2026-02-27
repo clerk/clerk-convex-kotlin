@@ -1,6 +1,7 @@
 package com.clerk.convex
 
 import android.content.Context
+import dev.convex.android.ConvexClientWithAuth
 
 /**
  * Creates a [dev.convex.android.ConvexClientWithAuth] configured with [ClerkConvexAuthProvider] and
@@ -10,10 +11,7 @@ import android.content.Context
  *
  * **Important:** Call `Clerk.initialize(...)` before creating this client.
  */
-fun createClerkConvexClient(
-  deploymentUrl: String,
-  context: Context,
-): dev.convex.android.ConvexClientWithAuth<String> =
+fun createClerkConvexClient(deploymentUrl: String, context: Context): ConvexClientWithAuth<String> =
   ClerkConvexAuthProvider().createConvexClientWithAuth(deploymentUrl, context)
 
 /**
@@ -23,7 +21,5 @@ fun createClerkConvexClient(
 fun ClerkConvexAuthProvider.createConvexClientWithAuth(
   deploymentUrl: String,
   context: Context,
-): dev.convex.android.ConvexClientWithAuth<String> =
-  dev.convex.android.ConvexClientWithAuth(deploymentUrl, this).also { client ->
-    bind(client, context)
-  }
+): ConvexClientWithAuth<String> =
+  ConvexClientWithAuth(deploymentUrl, this).also { client -> bind(client, context) }
