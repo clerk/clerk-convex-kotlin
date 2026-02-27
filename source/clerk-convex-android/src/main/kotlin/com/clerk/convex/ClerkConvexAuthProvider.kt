@@ -39,7 +39,8 @@ class ClerkConvexAuthProvider : AuthProvider<String> {
    * This performs an initial sync and listens for Clerk session changes, calling `login()` or
    * `logout()` on the client as needed.
    *
-   * Prefer using [ConvexClientWithAuth] helper instead of calling this directly.
+   * Prefer using [createClerkConvexClient] or [createConvexClientWithAuth] instead of calling this
+   * directly.
    *
    * Clerk must be configured before calling this method.
    */

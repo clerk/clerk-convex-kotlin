@@ -35,19 +35,34 @@ Follow the [Clerk Android quickstart](https://clerk.com/docs/android/getting-sta
     }
     ```
 
-5. Wherever you currently create `ConvexClient`, switch to `ConvexClientWithAuth` with `ClerkConvexAuthProvider`:
+5. Wherever you currently create `ConvexClient`, switch to the provided Clerk helper factory.
 
     ```kotlin
     import com.clerk.api.Clerk
-    import com.clerk.convex.ClerkConvexAuthProvider
-    import com.clerk.convex.ConvexClientWithAuth
+    import com.clerk.convex.createClerkConvexClient
     
-    Clerk.configure(publishableKey = "YOUR_CLERK_PUBLISHABLE_KEY")
+    Clerk.initialize(
+        context = applicationContext,
+        publishableKey = "YOUR_CLERK_PUBLISHABLE_KEY",
+    )
     
-    val authProvider = ClerkConvexAuthProvider()
-    val client = ConvexClientWithAuth(
+    val client = createClerkConvexClient(
         deploymentUrl = "YOUR_CONVEX_DEPLOYMENT_URL",
-        authProvider = authProvider,
         context = applicationContext
+    )
+    ```
+
+    This helper is Clerk-specific and uses `ClerkConvexAuthProvider()` internally.
+
+    To provide your own `ClerkConvexAuthProvider` instance explicitly:
+
+    ```kotlin
+    import com.clerk.convex.ClerkConvexAuthProvider
+    import com.clerk.convex.createConvexClientWithAuth
+
+    val authProvider = ClerkConvexAuthProvider()
+    val client = authProvider.createConvexClientWithAuth(
+        deploymentUrl = "YOUR_CONVEX_DEPLOYMENT_URL",
+        context = applicationContext,
     )
     ```

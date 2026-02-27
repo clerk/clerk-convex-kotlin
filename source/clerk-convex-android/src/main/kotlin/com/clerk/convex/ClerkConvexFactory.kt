@@ -3,19 +3,27 @@ package com.clerk.convex
 import android.content.Context
 
 /**
- * Creates a [dev.convex.android.ConvexClientWithAuth] configured with Clerk authentication and
+ * Creates a [dev.convex.android.ConvexClientWithAuth] configured with [ClerkConvexAuthProvider] and
  * session sync.
  *
- * This mirrors a convenience initializer and is the preferred entry point for creating a
- * Clerk-backed Convex client.
+ * This is the preferred entry point for creating a Clerk-backed Convex client.
  *
  * **Important:** Call `Clerk.initialize(...)` before creating this client.
  */
-fun ConvexClientWithAuth(
+fun createClerkConvexClient(
   deploymentUrl: String,
   context: Context,
-  authProvider: ClerkConvexAuthProvider = ClerkConvexAuthProvider(),
 ): dev.convex.android.ConvexClientWithAuth<String> =
-  dev.convex.android.ConvexClientWithAuth(deploymentUrl, authProvider).also { client ->
-    authProvider.bind(client, context)
+  ClerkConvexAuthProvider().createConvexClientWithAuth(deploymentUrl, context)
+
+/**
+ * Creates a [dev.convex.android.ConvexClientWithAuth] using this provider and starts Clerk session
+ * synchronization.
+ */
+fun ClerkConvexAuthProvider.createConvexClientWithAuth(
+  deploymentUrl: String,
+  context: Context,
+): dev.convex.android.ConvexClientWithAuth<String> =
+  dev.convex.android.ConvexClientWithAuth(deploymentUrl, this).also { client ->
+    bind(client, context)
   }
