@@ -55,7 +55,7 @@ Follow the [Clerk Android quickstart](https://clerk.com/docs/android/getting-sta
 
 ## Reacting to authentication state
 
-The ConvexClientWithAuth.authState is a `StateFlow` that contains the latest authentication state from the client.
+The `ConvexClientWithAuth.authState` is a `StateFlow` that contains the latest authentication state from the client.
 You can set up your UI to react to new `authState` values, (e.g. login/logout, loading, authenticated content)
 
 ## Example Application
