@@ -24,7 +24,7 @@ import kotlinx.coroutines.launch
  * Users must first sign in using Clerk. This provider then syncs Convex authentication
  * automatically — no manual `client.login()` call is required.
  *
- * @see ClerkConvexClient
+ * @see dev.convex.android.ConvexClientWithAuth
  */
 class ClerkConvexAuthProvider : AuthProvider<String> {
 
@@ -39,9 +39,12 @@ class ClerkConvexAuthProvider : AuthProvider<String> {
    * This performs an initial sync and listens for Clerk session changes, calling `login()` or
    * `logout()` on the client as needed.
    *
+   * Prefer using [createClerkConvexClient] or [createConvexClientWithAuth] instead of calling this
+   * directly.
+   *
    * Clerk must be configured before calling this method.
    */
-  fun bind(client: ConvexClientWithAuth<String>, context: Context) {
+  internal fun bind(client: ConvexClientWithAuth<String>, context: Context) {
     this.client = WeakReference(client)
     this.applicationContext = context.applicationContext
     startSessionSync()

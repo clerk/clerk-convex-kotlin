@@ -3,11 +3,12 @@ package com.clerk.workouttracker
 import android.app.Application
 import com.clerk.api.Clerk
 import com.clerk.api.ClerkConfigurationOptions
-import com.clerk.convex.ClerkConvexClient
+import com.clerk.convex.createClerkConvexClient
 import com.clerk.workouttracker.core.WorkoutRepository
+import dev.convex.android.ConvexClientWithAuth
 
 class WorkoutTrackerApplication : Application() {
-  private lateinit var clerkConvexClient: ClerkConvexClient
+  private lateinit var convexClient: ConvexClientWithAuth<String>
   lateinit var repository: WorkoutRepository
     private set
 
@@ -19,13 +20,8 @@ class WorkoutTrackerApplication : Application() {
       options = ClerkConfigurationOptions(enableDebugMode = true),
     )
 
-    clerkConvexClient =
-      ClerkConvexClient(deploymentUrl = Env.convexDeploymentUrl, context = applicationContext)
-    repository = WorkoutRepository(clerkConvexClient)
-  }
-
-  override fun onTerminate() {
-    repository.close()
-    super.onTerminate()
+    convexClient =
+      createClerkConvexClient(deploymentUrl = Env.convexDeploymentUrl, context = applicationContext)
+    repository = WorkoutRepository(convexClient)
   }
 }

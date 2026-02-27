@@ -1,6 +1,6 @@
 # Clerk-Convex-Kotlin
 
-`clerk-convex-kotlin` is an Android library that bridges Clerk and Convex by automatically syncing Clerk session auth into `ClerkConvexClient`.
+`clerk-convex-kotlin` is an Android library that bridges Clerk and Convex by automatically syncing Clerk session auth into `ConvexClientWithAuth`.
 
 ## Getting Started
 
@@ -35,16 +35,19 @@ Follow the [Clerk Android quickstart](https://clerk.com/docs/android/getting-sta
     }
     ```
 
-5. Wherever you currently create `ConvexClient`, switch to `ClerkConvexClient`:
+5. Wherever you currently create `ConvexClient`, switch to the provided Clerk helper factory.
 
     ```kotlin
     import com.clerk.api.Clerk
-    import com.clerk.convex.ClerkConvexClient
+    import com.clerk.convex.createClerkConvexClient
     
-    Clerk.configure(publishableKey = "YOUR_CLERK_PUBLISHABLE_KEY")
-    
-    val clerkConvex = ClerkConvexClient(
-        deploymentUrl = "YOUR_CONVEX_DEPLOYMENT_URL",
+    Clerk.initialize(
         context = applicationContext,
+        publishableKey = "YOUR_CLERK_PUBLISHABLE_KEY",
+    )
+    
+    val client = createClerkConvexClient(
+        deploymentUrl = "YOUR_CONVEX_DEPLOYMENT_URL",
+        context = applicationContext
     )
     ```
