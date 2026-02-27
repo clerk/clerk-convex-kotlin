@@ -51,18 +51,3 @@ Follow the [Clerk Android quickstart](https://clerk.com/docs/android/getting-sta
         context = applicationContext
     )
     ```
-
-    This helper is Clerk-specific and uses `ClerkConvexAuthProvider()` internally.
-
-    To provide your own `ClerkConvexAuthProvider` instance explicitly:
-
-    ```kotlin
-    import com.clerk.convex.ClerkConvexAuthProvider
-    import com.clerk.convex.createConvexClientWithAuth
-
-    val authProvider = ClerkConvexAuthProvider()
-    val client = authProvider.createConvexClientWithAuth(
-        deploymentUrl = "YOUR_CONVEX_DEPLOYMENT_URL",
-        context = applicationContext,
-    )
-    ```

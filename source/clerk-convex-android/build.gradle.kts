@@ -32,10 +32,7 @@ android {
   }
 }
 
-dokka {
-  moduleName.set("Clerk Convex Kotlin")
-  dokkaSourceSets.configureEach { includes.from("module.md") }
-}
+dokka { moduleName.set("Clerk Convex Kotlin") }
 
 mavenPublishing {
   coordinates("com.clerk", "clerk-convex-kotlin", property("CLERK_CONVEX_KOTLIN_VERSION") as String)

@@ -5,9 +5,10 @@ import com.clerk.api.Clerk
 import com.clerk.api.ClerkConfigurationOptions
 import com.clerk.convex.createClerkConvexClient
 import com.clerk.workouttracker.core.WorkoutRepository
+import dev.convex.android.ConvexClientWithAuth
 
 class WorkoutTrackerApplication : Application() {
-  private lateinit var convexClient: dev.convex.android.ConvexClientWithAuth<String>
+  private lateinit var convexClient: ConvexClientWithAuth<String>
   lateinit var repository: WorkoutRepository
     private set
 
