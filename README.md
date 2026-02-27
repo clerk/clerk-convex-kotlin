@@ -51,3 +51,16 @@ Follow the [Clerk Android quickstart](https://clerk.com/docs/android/getting-sta
         context = applicationContext
     )
     ```
+6. Authenticate users via Clerk. Auth state is automatically synced to convex
+
+## Reacting to authentication state
+
+The ConvexClientWithAuth.authState is a `StateFlow` that contains the latest authentication state from the client.
+You can set up your UI to react to new `authState` values, (e.g. login/logout, loading, authenticated content)
+
+## Example Application
+
+This repo includes a full example at `/samples/workout-tracker`.
+
+
+ 
