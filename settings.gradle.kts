@@ -24,6 +24,6 @@ dependencyResolutionManagement {
 
 rootProject.name = "ClerkConvex"
 
-include(":source:clerk-convex-android")
+include(":source:clerk-convex-kotlin")
 
 include(":samples:workout-tracker")
