@@ -23,4 +23,4 @@ jobs:
         uses: gradle/actions/setup-gradle@v3
 
       - name: Run unit tests
-        run: ./gradlew :source:clerk-convex-android:testDebugUnitTest
+        run: ./gradlew :source:clerk-convex-kotlin:testDebugUnitTest
