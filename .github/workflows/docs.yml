@@ -32,12 +32,12 @@ jobs:
         uses: android-actions/setup-android@v3
 
       - name: Generate Dokka docs
-        run: ./gradlew :source:clerk-convex-android:dokkaGeneratePublicationHtml --stacktrace
+        run: ./gradlew :source:clerk-convex-kotlin:dokkaGeneratePublicationHtml --stacktrace
 
       - name: Publish docs branch
         env:
           DOCS_BRANCH: docs
-          DOCS_OUTPUT: source/clerk-convex-android/build/dokka/html
+          DOCS_OUTPUT: source/clerk-convex-kotlin/build/dokka/html
         run: |
           set -euo pipefail
 
