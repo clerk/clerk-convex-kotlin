@@ -9,10 +9,7 @@ android {
   namespace = "com.clerk.convex"
   compileSdk = libs.versions.compileSdk.get().toInt()
 
-  defaultConfig {
-    minSdk = libs.versions.minSdk.get().toInt()
-    consumerProguardFiles("consumer-rules.pro")
-  }
+  defaultConfig { minSdk = libs.versions.minSdk.get().toInt() }
 
   compileOptions {
     sourceCompatibility = JavaVersion.VERSION_17
