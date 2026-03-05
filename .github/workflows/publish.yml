@@ -184,4 +184,4 @@ jobs:
           fi
 
       - name: Publish and release to Maven Central
-        run: ./gradlew :source:clerk-convex-android:publishAndReleaseToMavenCentral --stacktrace
+        run: ./gradlew :source:clerk-convex-kotlin:publishAndReleaseToMavenCentral --stacktrace
