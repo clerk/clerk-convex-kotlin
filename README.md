@@ -38,13 +38,7 @@ Follow the [Clerk Android quickstart](https://clerk.com/docs/android/getting-sta
 5. Wherever you currently create `ConvexClient`, switch to the provided Clerk helper factory.
 
     ```kotlin
-    import com.clerk.api.Clerk
     import com.clerk.convex.createClerkConvexClient
-    
-    Clerk.initialize(
-        context = applicationContext,
-        publishableKey = "YOUR_CLERK_PUBLISHABLE_KEY",
-    )
     
     val client = createClerkConvexClient(
         deploymentUrl = "YOUR_CONVEX_DEPLOYMENT_URL",
