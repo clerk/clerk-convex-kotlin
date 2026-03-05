@@ -50,7 +50,8 @@ class ClerkConvexAuthProvider : AuthProvider<String> {
     startSessionSync()
   }
 
-  override suspend fun login(context: Context): Result<String> = fetchToken()
+  override suspend fun login(context: Context, onIdToken: (String?) -> Unit): Result<String> =
+    fetchToken()
 
   override suspend fun logout(context: Context): Result<Void?> {
     if (Clerk.activeSession != null) {
