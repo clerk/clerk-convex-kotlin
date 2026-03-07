@@ -29,6 +29,7 @@ import kotlinx.coroutines.launch
 class ClerkConvexAuthProvider : AuthProvider<String> {
 
   private var client: WeakReference<ConvexClientWithAuth<String>>? = null
+  private var onIdToken: ((String?) -> Unit)? = null
   private lateinit var applicationContext: Context
   private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
   private var sessionSyncJob: Job? = null
@@ -51,9 +52,13 @@ class ClerkConvexAuthProvider : AuthProvider<String> {
   }
 
   override suspend fun login(context: Context, onIdToken: (String?) -> Unit): Result<String> =
-    fetchToken()
+    authenticate(onIdToken)
+
+  override suspend fun loginFromCache(onIdToken: (String?) -> Unit): Result<String> =
+    authenticate(onIdToken)
 
   override suspend fun logout(context: Context): Result<Void?> {
+    onIdToken = null
     if (Clerk.activeSession != null) {
       when (val result = Clerk.auth.signOut()) {
         is ClerkResult.Failure -> {
@@ -71,6 +76,11 @@ class ClerkConvexAuthProvider : AuthProvider<String> {
   /** Cancels session sync and releases resources. */
   fun close() {
     scope.cancel()
+  }
+
+  private suspend fun authenticate(onIdToken: (String?) -> Unit): Result<String> {
+    this.onIdToken = onIdToken
+    return fetchToken()
   }
 
   private suspend fun fetchToken(): Result<String> =
@@ -103,8 +113,10 @@ class ClerkConvexAuthProvider : AuthProvider<String> {
     val convexClient = client?.get() ?: return
 
     if (shouldLogin(oldSession, newSession)) {
-      convexClient.login(applicationContext)
+      convexClient.loginFromCache()
     } else if (shouldLogout(oldSession, newSession)) {
+      onIdToken?.invoke(null)
+      onIdToken = null
       convexClient.logout(applicationContext)
     }
   }
