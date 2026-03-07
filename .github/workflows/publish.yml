@@ -82,7 +82,7 @@ jobs:
             -f "tag_name=$tag_name" \
             -f "target_commitish=${{ github.event.repository.default_branch }}" \
             -f "name=$tag_name" \
-            -F "draft=true" \
+            -F "draft=false" \
             -F "prerelease=false" \
             -F "generate_release_notes=true"
 
