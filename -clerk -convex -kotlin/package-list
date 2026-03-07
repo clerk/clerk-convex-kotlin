@@ -15,5 +15,6 @@ $dokka.location:com.clerk.convex/ClerkConvexAuthProvider/ClerkConvexAuthProvider
 $dokka.location:com.clerk.convex/ClerkConvexAuthProvider/close/#/PointingToDeclaration/-clerk -convex -kotlin/com.clerk.convex/-clerk-convex-auth-provider/close.html
 $dokka.location:com.clerk.convex/ClerkConvexAuthProvider/extractIdToken/#kotlin.String/PointingToDeclaration/-clerk -convex -kotlin/com.clerk.convex/-clerk-convex-auth-provider/extract-id-token.html
 $dokka.location:com.clerk.convex/ClerkConvexAuthProvider/login/#android.content.Context#kotlin.Function1[kotlin.String?,kotlin.Unit]/PointingToDeclaration/-clerk -convex -kotlin/com.clerk.convex/-clerk-convex-auth-provider/login.html
+$dokka.location:com.clerk.convex/ClerkConvexAuthProvider/loginFromCache/#kotlin.Function1[kotlin.String?,kotlin.Unit]/PointingToDeclaration/-clerk -convex -kotlin/com.clerk.convex/-clerk-convex-auth-provider/login-from-cache.html
 $dokka.location:com.clerk.convex/ClerkConvexAuthProvider/logout/#android.content.Context/PointingToDeclaration/-clerk -convex -kotlin/com.clerk.convex/-clerk-convex-auth-provider/logout.html
 com.clerk.convex
