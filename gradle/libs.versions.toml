@@ -2,7 +2,7 @@
 agp = "8.13.2"
 detekt = "1.23.8"
 dokka = "2.1.0"
-kotlin = "2.3.10"
+kotlin = "2.3.20"
 kotlinxCoroutines = "1.10.2"
 kotlinxSerialization = "1.9.0"
 mavenPublish = "0.33.0"
