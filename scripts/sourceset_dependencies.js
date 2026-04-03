@@ -1,1 +1,1 @@
-sourceset_dependencies='{":source:clerk-convex-kotlin/debug":[],":source:clerk-convex-kotlin/main":[],":source:clerk-convex-kotlin/release":[]}'
+sourceset_dependencies='{":source:clerk-convex-kotlin/main":[],":source:clerk-convex-kotlin/release":[]}'
