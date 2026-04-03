@@ -21,7 +21,7 @@ convexMobile = "0.8.0"
 
 # Test
 junit = "4.13.2"
-mockk = "1.14.7"
+mockk = "1.14.9"
 robolectric = "4.16.1"
 coreKtx = "1.18.0"
 junitVersion = "1.1.5"
