@@ -29,7 +29,7 @@ espressoCore = "3.5.1"
 lifecycleRuntimeKtx = "2.6.1"
 activityCompose = "1.13.0"
 composeBom = "2024.12.01"
-navigationCompose = "2.8.0"
+navigationCompose = "2.9.7"
 
 [libraries]
 clerk-api = { module = "com.clerk:clerk-android-api", version.ref = "clerkApi" }
