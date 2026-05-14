@@ -6,7 +6,7 @@ kotlin = "2.3.21"
 kotlinxCoroutines = "1.11.0"
 kotlinxSerialization = "1.11.0"
 mavenPublish = "0.36.0"
-spotless = "8.4.0"
+spotless = "8.5.0"
 
 # Build Versions
 jdk = "17"
