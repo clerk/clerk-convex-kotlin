@@ -5,11 +5,6 @@ on:
     types:
       - published
   workflow_dispatch:
-    inputs:
-      version:
-        description: "Version to publish, for example 0.10.0"
-        required: true
-        type: string
 
 jobs:
   create-release:
@@ -26,47 +21,23 @@ jobs:
           fetch-depth: 0
           ref: ${{ github.event.repository.default_branch }}
 
-      - name: Update version in gradle.properties
+      - name: Resolve version from gradle.properties
         id: get_version
-        env:
-          REQUESTED_VERSION: ${{ inputs.version }}
         run: |
           set -euo pipefail
 
           version="$(
-            printf '%s' "$REQUESTED_VERSION" |
+            awk -F= '/^CLERK_CONVEX_KOTLIN_VERSION=/{print $2; exit}' gradle.properties |
             tr -d '[:space:]'
           )"
           if [ -z "$version" ]; then
-            echo "Missing workflow dispatch version input"
-            exit 1
-          fi
-          version="${version#v}"
-          if [ -z "$version" ]; then
-            echo "Version input must contain more than a leading v"
-            exit 1
-          fi
-
-          tmp_file="$(mktemp)"
-          awk -v version="$version" '
-            BEGIN { updated = 0 }
-            /^CLERK_CONVEX_KOTLIN_VERSION=/ {
-              print "CLERK_CONVEX_KOTLIN_VERSION=" version
-              updated = 1
-              next
-            }
-            { print }
-            END {
-              if (!updated) {
-                exit 1
-              }
-            }
-          ' gradle.properties > "$tmp_file" || {
-            rm -f "$tmp_file"
             echo "Missing CLERK_CONVEX_KOTLIN_VERSION in gradle.properties"
             exit 1
-          }
-          mv "$tmp_file" gradle.properties
+          fi
+          if [ "${version#v}" != "$version" ]; then
+            echo "CLERK_CONVEX_KOTLIN_VERSION must not include a leading v"
+            exit 1
+          fi
 
           tag_name="v$version"
           echo "version=$version" >> "$GITHUB_OUTPUT"
@@ -89,23 +60,6 @@ jobs:
           if git ls-remote --exit-code --tags origin "refs/tags/$tag_name" >/dev/null 2>&1; then
             echo "Tag already exists on origin: $tag_name"
             exit 1
-          fi
-
-      - name: Commit version update to main
-        run: |
-          set -euo pipefail
-
-          version="${{ steps.get_version.outputs.version }}"
-
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-
-          if git diff --quiet -- gradle.properties; then
-            echo "gradle.properties is already at version $version"
-          else
-            git add gradle.properties
-            git commit -m "chore: release $version"
-            git push origin "HEAD:${{ github.event.repository.default_branch }}"
           fi
 
       - name: Create and push tag
