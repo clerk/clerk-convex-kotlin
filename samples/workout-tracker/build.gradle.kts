@@ -9,7 +9,7 @@ configurations.configureEach {
     // Temporary substitution: Clerk UI 1.0 currently references telemetry 1.0,
     // but the published telemetry artifact line is 0.1.x.
     substitute(module("com.clerk:clerk-android-telemetry:1.0"))
-      .using(module("com.clerk:clerk-android-telemetry:1.0.3"))
+      .using(module("com.clerk:clerk-android-telemetry:1.0.6"))
   }
 }
 
