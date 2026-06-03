@@ -97,6 +97,9 @@ jobs:
     runs-on: macos-latest-xlarge
     permissions:
       contents: read
+    outputs:
+      tag_name: ${{ steps.release_metadata.outputs.tag_name }}
+      release_url: ${{ steps.release_metadata.outputs.release_url }}
     env:
       ORG_GRADLE_PROJECT_mavenCentralUsername: ${{ secrets.MAVEN_CENTRAL_USERNAME || secrets.MAVEN_USERNAME }}
       ORG_GRADLE_PROJECT_mavenCentralPassword: ${{ secrets.MAVEN_CENTRAL_PASSWORD || secrets.MAVEN_PASSWORD }}
@@ -110,6 +113,36 @@ jobs:
         with:
           fetch-depth: 0
           ref: ${{ github.event_name == 'release' && github.event.release.tag_name || needs.create-release.outputs.tag_name }}
+
+      - name: Get release metadata
+        id: release_metadata
+        env:
+          EVENT_RELEASE_TAG_NAME: ${{ github.event.release.tag_name }}
+          EVENT_RELEASE_URL: ${{ github.event.release.html_url }}
+          DISPATCH_RELEASE_TAG_NAME: ${{ needs.create-release.outputs.tag_name }}
+        run: |
+          set -euo pipefail
+
+          if [ "$GITHUB_EVENT_NAME" = "release" ]; then
+            tag_name="$EVENT_RELEASE_TAG_NAME"
+            release_url="$EVENT_RELEASE_URL"
+          else
+            tag_name="$DISPATCH_RELEASE_TAG_NAME"
+            release_url="https://github.com/$GITHUB_REPOSITORY/releases/tag/$tag_name"
+          fi
+
+          if [ -z "$tag_name" ]; then
+            echo "Failed to determine release tag"
+            exit 1
+          fi
+          if [ -z "$release_url" ]; then
+            release_url="https://github.com/$GITHUB_REPOSITORY/releases/tag/$tag_name"
+          fi
+
+          {
+            echo "tag_name=$tag_name"
+            echo "release_url=$release_url"
+          } >> "$GITHUB_OUTPUT"
 
       - name: Set up JDK 17
         uses: actions/setup-java@v5
@@ -190,3 +223,51 @@ jobs:
 
       - name: Publish and release to Maven Central
         run: ./gradlew :source:clerk-convex-kotlin:publishAndReleaseToMavenCentral --stacktrace
+
+  notify-slack:
+    needs: publish
+    if: needs.publish.result == 'success'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Notify Slack
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+          RELEASE_TAG: ${{ needs.publish.outputs.tag_name }}
+          RELEASE_URL: ${{ needs.publish.outputs.release_url }}
+        run: |
+          if [ -z "$SLACK_WEBHOOK_URL" ]; then
+            echo "::warning::SLACK_WEBHOOK_URL is not configured; skipping Slack notification"
+            exit 0
+          fi
+
+          PAYLOAD=$(jq -n \
+            --arg tag "$RELEASE_TAG" \
+            --arg release_url "$RELEASE_URL" \
+            '{
+              text: "Clerk Convex Kotlin \($tag) has been released",
+              blocks: [
+                {
+                  type: "section",
+                  text: {
+                    type: "mrkdwn",
+                    text: "*Clerk Convex Kotlin \($tag) has been released*"
+                  }
+                },
+                {
+                  type: "context",
+                  elements: [
+                    {
+                      type: "mrkdwn",
+                      text: "<\($release_url)|View the GitHub release>"
+                    }
+                  ]
+                }
+              ]
+            }')
+
+          curl --fail-with-body \
+            --request POST \
+            --header "Content-type: application/json" \
+            --data "$PAYLOAD" \
+            "$SLACK_WEBHOOK_URL"
