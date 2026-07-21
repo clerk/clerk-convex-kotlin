@@ -15,7 +15,7 @@ minSdk = "26"
 compileSdk = "36"
 
 # SDK Versions
-clerkUi = "1.0.32"
+clerkUi = "1.0.36"
 clerkApi = "1.0.32"
 convexMobile = "0.8.0"
 
